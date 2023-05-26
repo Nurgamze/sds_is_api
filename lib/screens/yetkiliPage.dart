@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:sds_is_platformu/screens/homePage.dart';
 import 'package:sds_is_platformu/screens/insertYetkili.dart';
 import '../const/sabitler.dart';
 import '../model/yetkiliModel.dart' show Yetkili, YetkiliModel;
@@ -11,7 +10,9 @@ import '../model/yetkiliModel.dart' show Yetkili, YetkiliModel;
 class YetkiliPage extends StatefulWidget {
   final String email;
   final String password;
-  const YetkiliPage({Key? key, required this.email, required this.password,}) : super(key: key);
+  //final String adsoyad;
+
+  const YetkiliPage({Key? key, required this.email, required this.password}) : super(key: key);
 
   @override
   State<YetkiliPage> createState() => _YetkiliPageState();
@@ -21,8 +22,10 @@ class _YetkiliPageState extends State<YetkiliPage> {
   YetkiliModel? yetkiliModel;
   List<Yetkili?> yetkilisList = [];
   List<Yetkili?> filteredYetkilisList = [];
+
   final searchController = TextEditingController();
   TextEditingController unvanController =TextEditingController();
+  TextEditingController passwordController =TextEditingController();
   String url = apiUrl;
 
 
@@ -33,8 +36,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
   }
 
   Future<void> yetkili() async {
-    final response =
-    await http.get(Uri.parse("$url/yetkili"));
+    final response =await http.get(Uri.parse("$url/yetkili"));
     if (response.statusCode == 200) {
       print(response.body);
     }
@@ -59,16 +61,10 @@ class _YetkiliPageState extends State<YetkiliPage> {
          title: Text('Yetkililer'),
          centerTitle: true,
          backgroundColor: Colors.brown,
-         leading: IconButton(
-           icon: Icon(Icons.arrow_back),
-           onPressed: (){
-             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomePage(email: widget.email, password: widget.password,)));
-           },
-         ),
        ),
        body: SingleChildScrollView(
          child: Column(
-           crossAxisAlignment: CrossAxisAlignment.start,
+             crossAxisAlignment: CrossAxisAlignment.start,
            children: [
              Padding(
                padding: const EdgeInsets.all(8.0),
@@ -76,6 +72,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                  children: [
                    Container(
                      width:MediaQuery.of(context).size.width * 0.8,
+                     height: 50,
                      decoration: BoxDecoration(
                        boxShadow: [
                          BoxShadow(
@@ -90,13 +87,10 @@ class _YetkiliPageState extends State<YetkiliPage> {
                          decoration: InputDecoration(
                            filled: true,
                            fillColor: Colors.white,
-                           hintText: 'Ara...',
                            prefixIcon: Icon(Icons.search),
+                           hintText: 'Ara...',
                            border: OutlineInputBorder(
-                             borderRadius: BorderRadius.circular(15),
-                             borderSide: BorderSide(
-                               color: Colors.red,
-                             )
+                             borderRadius: BorderRadius.circular(10),
                            ),
                          ),
                          onChanged: (value) {
@@ -104,19 +98,19 @@ class _YetkiliPageState extends State<YetkiliPage> {
                          },
                        ),
                    ),
-                   SizedBox(width: 10,),
+                   SizedBox(width: 5,),
 
                    Container(
-                     width: 55,
-                     height: 60,
+                     width: 50,
+                     height: 50,
                        decoration: BoxDecoration(
                          color: Colors.white,
                          border: Border.all(color: Colors.grey,width: 1),
-                         borderRadius: BorderRadius.circular(13)
+                         borderRadius: BorderRadius.circular(10)
                        ),
                        child: IconButton(
                          icon: Icon( Icons.add,color: Colors.brown,),
-                         iconSize: 40,
+                         iconSize: 30,
                          onPressed: () {
                            bool superyetkili=false;
                            for (var i = 0; i < yetkilisList.length; i++) {
@@ -127,7 +121,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                            }
                            //kullanıcı süper yetkiliyse yetkili ekleyebilsin
                            if(superyetkili){
-                             Navigator.pushReplacement(context, MaterialPageRoute(
+                             Navigator.push(context, MaterialPageRoute(
                                  builder: (context) => InsertYetkili(email: widget.email, password: widget.password,),));
                            }
                            else{
@@ -136,7 +130,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                  content: Text("Yetkiniz bulunmamaktadır"),
                                  actions: [
                                    ElevatedButton(onPressed: (){
-                                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
+                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
                                    }, child: Text("Tamam"))
                                  ],
                                );
@@ -156,6 +150,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                    DataColumn(label: Text('Ad Soyad')),
                    DataColumn(label: Text('Unvan ')),
                    DataColumn(label: Text('E-Posta')),
+                   DataColumn(label: Text('Şifre ')),
                    DataColumn(label: Text('Gsm')),
                  ],
 
@@ -164,6 +159,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                      DataCell(Text(yetkili!.adsoyad!)),
                      DataCell(Text(yetkili.unvan!)),
                      DataCell(Text(yetkili.email!)),
+                     DataCell(Text(yetkili.password!)),
                      DataCell(Text(yetkili.gsm!.toString())),
                    ],
 
@@ -181,22 +177,42 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                  child: ElevatedButton(onPressed: (){
                                    showDialog(context: context, builder: (context){
                                     return AlertDialog(
-                                       title: Text("Unvan Giriniz"),
-                                       content: TextField(
-                                         controller: unvanController,
-                                         decoration: InputDecoration(
-                                             labelText: "Unvan"
-                                         ),
+                                       title: Text("Bilgileri Değiştirin"),
+                                       content: Column(
+                                         mainAxisSize: MainAxisSize.min,
+                                         children: [
+                                           TextField(
+                                             controller: unvanController,
+                                             decoration: InputDecoration(
+                                                 labelText: "Unvan",
+                                                 border: OutlineInputBorder(
+                                                     borderRadius: BorderRadius.circular(5)
+                                                 )
+                                             ),
+                                           ),
+                                           SizedBox(height: 10,),
+                                           TextField(
+                                             controller: passwordController,
+                                             decoration: InputDecoration(
+                                                 labelText: "Şifre",
+                                               border: OutlineInputBorder(
+                                                 borderRadius: BorderRadius.circular(5)
+                                               )
+                                             ),
+                                           ),
+                                         ],
                                        ),
+
                                        actions: [
                                          ElevatedButton(onPressed: (){
                                            void editYetkili() async{
                                              final response=await http.post(Uri.parse("$url/edit/$id"),
                                                  body: {
                                                    'unvan':unvanController.text,
+                                                   'password':passwordController.text,
                                                  });
                                              if(response.statusCode==201){
-                                               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
+                                               Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
                                              }
                                            }
                                            setState(() {
@@ -207,7 +223,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.grey[400])),
                                          ),
                                          ElevatedButton(onPressed: (){
-                                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
+                                           Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
                                          }, child: Text("İptal"),
                                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.grey[400])),
                                          )
@@ -226,7 +242,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                      if(response.statusCode==201){
                                        print(response.body);
                                      }
-                                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
+                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
                                    }
                                    setState(() {
                                      deleteYetkili();
@@ -240,7 +256,6 @@ class _YetkiliPageState extends State<YetkiliPage> {
                      });
                    }
                  )).toList(),
-
                ),
              ),
            ],

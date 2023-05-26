@@ -1,145 +1,158 @@
-import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sds_is_platformu/const/sabitler.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../const/sabitler.dart';
 import '../model/usersModel.dart';
+import '../model/yetkiliModel.dart';
 import 'homePage.dart';
-import 'package:http/http.dart'as http;
-
 
 class KullanicilarPage extends StatefulWidget {
-
   final String email;
   final String password;
+  final String adsoyad;
+  final int id;
 
-   KullanicilarPage ({Key? key, required this.email, required this.password}) : super(key: key);
+  KullanicilarPage({Key? key, required this.email, required this.password, required this.adsoyad, required this.id,}) : super(key: key);
 
   @override
-  State<KullanicilarPage> createState() => _KullanicilarPageState();
+  _KullanicilarPageState createState() => _KullanicilarPageState();
 }
 
 class _KullanicilarPageState extends State<KullanicilarPage> {
-
-
-  UsersModel? usersModel;
-  List<User?> userList = [];
+  UsersModel usersModel = UsersModel();
+  bool isLoading = true;
   String url = apiUrl;
+
+  late YetkiliModel yetkiliModel;
+  bool isAuthorized = false;
 
 
   @override
   void initState() {
-    users();
     super.initState();
+    users();
+    fetchAuthorization();
   }
 
-  Future<void> users() async{
-    final response = await http.get(Uri.parse("$url/users"));
-    if(response.statusCode==200){
-      print(response.body);
-    }
+
+  Future<void> users() async {
     setState(() {
-      usersModel=UsersModel.fromJson(jsonDecode(response.body));
-      userList=usersModel!.data!;
+      isLoading = true;
     });
+
+    final response = await http.get(Uri.parse('$url/users'));
+    if (response.statusCode == 200) {
+      setState(() {
+        usersModel = UsersModel.fromJson(jsonDecode(response.body));
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Failed to load users');
+    }
   }
 
-  Future<void> approveUser(User user) async {
-    final response = await http.post( Uri.parse("$url/users/${user.id}"),
+  Future<void> activity(User user, bool status) async {
+    if (!isAuthorized) return;
+    print('istek gitti');
+
+    final response = await http.post(Uri.parse('$url/users/${user.id}'),
       body: {
-         'approved':'True',
+        'isActive': status ? "true" : "false",
       },
     );
-    print("listile idsi ${user.id}");
     if (response.statusCode == 200) {
-      print("Kullanıcı onaylandı: ${response.body}");
-      showDialog(context: context, builder: (BuildContext context){
-        return AlertDialog(
-          title: Text("Başarılı"),
-          content: Text("Kullanıcı onaylandı"),
-          actions: [
-            ElevatedButton(onPressed: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>KullanicilarPage(email: widget.email, password: widget.password)));
-            }, child: Text("Tamam"),style: ElevatedButton.styleFrom(backgroundColor: Colors.grey.shade400))
-          ],
-        );
+      print('200 döndü');
+      print(user.id);
+
+      setState(() {
+        user.isActive = status;
+        print('status: $status');
       });
-    }else{
-      print("Kullanıcı onaylanırken bir hata oluştuuu.: ${response.body}");
-      return;
+
+      // update the user's isActive status in the local list
+      final int userIndex = usersModel.data!.indexWhere((u) => u.id == user.id);
+      if (userIndex != -1) {
+        setState(() {
+          usersModel.data![userIndex].isActive = status;
+        });
+      }
+      print("isactive değeri değiştirildi $userIndex. indexdeki kullanıcı , db id si ${user.id} olan  $status edildi");
+      String message= ('${user.adsoyad} kullanıcısı ${status ? 'aktif' : 'pasif'} hale getirildi.');
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(message),
+            actions: [
+              TextButton(
+                child: Text('Tamam'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+
+    } else {
+      print('hata oluştu'); // log an error message if failed
     }
-    setState(() {});
   }
 
-  Future<void> passiveUser(User user) async{
-    final response= await http.post(Uri.parse("$url/users/${user.id}"),
-    body: {
-      'approved':'False',
-    });
+  Future<void> fetchAuthorization() async {
+    final response = await http.get(Uri.parse('$url/yetkili'));
     if (response.statusCode == 200) {
-      print("Kullanıcı pasife alındı: ${response.body}");
-      showDialog(context: context, builder: (BuildContext context){
-        return AlertDialog(
-          title: Text("Başarılı"),
-          content: Text("Kullanıcı pasife alındı"),
-          actions: [
-            ElevatedButton(onPressed: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>KullanicilarPage(email: widget.email, password: widget.password)));
-            }, child: Text("Tamam"),style: ElevatedButton.styleFrom(backgroundColor: Colors.grey.shade400))
-          ],
-        );
+      setState(() {
+        yetkiliModel = YetkiliModel.fromJson(jsonDecode(response.body));
+        isAuthorized = yetkiliModel.yetkili!.any((y) => y.email == widget.email);
       });
-    }else{
-      print("Kullanıcı pasife alınırken bir hata oluştuuu.: ${response.body}");
-      return;
+    } else {
+      throw Exception('Yetkilendirme hatası');
     }
-    setState(() {});
-
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Kullanıcılar"),
+        title: Text('Kullanıcılar'),
         centerTitle: true,
         backgroundColor: Colors.brown,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: (){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage(email: widget.email, password: widget.password,)));
-          },
-        ),
-      ),
-
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child:ListView.builder(
-          itemCount: userList.length,
-          itemBuilder: (context, index) {
-            final user = userList[index];
-            return ListTile(
-              title: Text(user!.adsoyad.toString()),
-              subtitle: Text(user!.email.toString()),
-            trailing: Row(
-             // mainAxisAlignment: MainAxisAlignment.spaceAround,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                user.approved != true ? ElevatedButton(
-                 onPressed: (){
-                   approveUser(user);
-                 },
-                child: Text("Onayla")):
-                SizedBox(width: 10,),
-                ElevatedButton(
-                    onPressed: (){
-                      passiveUser(user);
-                    },
-                  child: Text("Pasif"),style: ElevatedButton.styleFrom(backgroundColor: Colors.red),)
-              ],
-            ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(
+                  email: widget.email,
+                  password: widget.password,
+                  adsoyad: widget.adsoyad,
+                  id: widget.id,
+                ),
+              ),
             );
           },
         ),
+      ),
+      body: isLoading ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+        itemCount: usersModel.data?.length,
+        itemBuilder: (context, index) {
+          final user = usersModel.data?[index];
+          return SwitchListTile(
+            title: Text(user?.adsoyad ?? ''),
+            subtitle: Text(user?.email ?? ''),
+            value: user?.isActive ?? false,
+            onChanged: isAuthorized ? (bool value) => activity(user!, value) : null,
+            activeColor: Colors.green,
+            inactiveThumbColor: Colors.grey,
+          );
+        },
       ),
     );
   }

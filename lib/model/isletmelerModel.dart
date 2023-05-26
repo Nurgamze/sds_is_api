@@ -1,9 +1,9 @@
-class Isletmeler {
+class IsletmeModel {
   List<Isletme>? isletme;
 
-  Isletmeler({this.isletme});
+  IsletmeModel({this.isletme});
 
-  Isletmeler.fromJson(Map<String, dynamic> json) {
+  IsletmeModel.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
       isletme = <Isletme>[];
       json['data'].forEach((v) {

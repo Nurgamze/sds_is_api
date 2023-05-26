@@ -1,5 +1,5 @@
-
 class YetkiliModel {
+
   List<Yetkili>? yetkili;
 
   YetkiliModel({this.yetkili});
@@ -32,7 +32,8 @@ class Yetkili {
   bool? superyetkili;
 
   Yetkili(
-      {this.id,
+      {
+        this.id,
         this.adsoyad,
         this.email,
         this.password,

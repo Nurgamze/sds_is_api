@@ -1,9 +1,10 @@
-class Adaylar {
+class AdayModel {
   List<Aday>? aday;
 
-  Adaylar({this.aday});
+  AdayModel({this.aday});
 
-  Adaylar.fromJson(Map<String, dynamic> json) {
+
+  AdayModel.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
       aday = <Aday>[];
       json['data'].forEach((v) {
@@ -13,11 +14,11 @@ class Adaylar {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> aday = new Map<String, dynamic>();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.aday != null) {
-      aday['data'] = this.aday!.map((v) => v.toJson()).toList();
+      data['data'] = this.aday!.map((v) => v.toJson()).toList();
     }
-    return aday;
+    return data;
   }
 }
 
@@ -34,7 +35,7 @@ class Aday {
   bool? askerlik;
   bool? ehliyet;
   String? mezuniyet;
-  String? yasadGSehir;
+  String? yasadigiSehir;
   String? dogduguSehir;
   bool? sigara;
   bool? alkol;
@@ -57,7 +58,7 @@ class Aday {
         this.askerlik,
         this.ehliyet,
         this.mezuniyet,
-        this.yasadGSehir,
+        this.yasadigiSehir,
         this.dogduguSehir,
         this.sigara,
         this.alkol,
@@ -80,7 +81,7 @@ class Aday {
     askerlik = json['askerlik'];
     ehliyet = json['ehliyet'];
     mezuniyet = json['mezuniyet'];
-    yasadGSehir = json['yasadıgı_sehir'];
+    yasadigiSehir = json['yasadigi_sehir'];
     dogduguSehir = json['dogdugu_sehir'];
     sigara = json['sigara'];
     alkol = json['alkol'];
@@ -105,7 +106,7 @@ class Aday {
     data['askerlik'] = this.askerlik;
     data['ehliyet'] = this.ehliyet;
     data['mezuniyet'] = this.mezuniyet;
-    data['yasadıgı_sehir'] = this.yasadGSehir;
+    data['yasadigi_sehir'] = this.yasadigiSehir;
     data['dogdugu_sehir'] = this.dogduguSehir;
     data['sigara'] = this.sigara;
     data['alkol'] = this.alkol;

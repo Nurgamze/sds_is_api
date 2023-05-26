@@ -20,16 +20,15 @@ class UsersModel {
     return data;
   }
 }
-
-
 class User {
   int? id;
   String? adsoyad;
   String? email;
   String? password;
   bool? approved;
+  bool? isActive;
 
-  User({this.id, this.adsoyad, this.email, this.password,this.approved});
+  User({this.id, this.adsoyad, this.email, this.password,this.approved,this.isActive});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -37,6 +36,7 @@ class User {
     email = json['email'];
     password = json['password'];
     approved = json['approved'];
+    isActive = json['isActive'];
   }
 
   Map<String, dynamic> toJson() {
@@ -46,6 +46,7 @@ class User {
     data['email'] = this.email;
     data['password'] = this.password;
     data['approved'] = this.approved;
+    data['isActive'] = this.isActive;
     return data;
   }
 }

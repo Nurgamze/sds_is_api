@@ -23,6 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String? email;
   String? adsoyad;
   String? password;
+  bool? approved;
   String url=apiUrl;
 
 
@@ -39,15 +40,16 @@ class _RegisterPageState extends State<RegisterPage> {
           "adsoyad":adsoyadRegisterController.text,
           "email":emailRegisterController.text,
           "password":passwordRegisterController.text,
+          'approved':'false',
 
         });
-    if(response.statusCode==200){
+    if(response.statusCode==201){
       showDialog(context: context, builder: (BuildContext context){
         return AlertDialog(
           content: Text("Kayıt başarılı şekilde oluşturulmuştur."),
           actions: [
             ElevatedButton(onPressed: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
             }, child: Text("Tamam"),
               style:ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade400),
@@ -57,10 +59,14 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       });
     }
-
     else{
       AlertDialog(
         content: Text("Bir hata oluştu"),
+        actions: [
+          ElevatedButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterPage()));
+          }, child: Text("Tamam"))
+        ],
       );
     }
   }

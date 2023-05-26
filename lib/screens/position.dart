@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart'as http;
 import 'package:sds_is_platformu/const/sabitler.dart';
 import '../model/positionModel.dart' show Data, PositionModel;
-import 'basvurupage.dart';
-import 'homePage.dart';
+import 'insertPosition.dart';
+import 'pozisyonDetay.dart';
 
 class PozisyonPage extends StatefulWidget {
-  final String email;
-  final String password;
-  const PozisyonPage({Key? key, required this.email, required this.password}) : super(key: key);
+  final String adsoyad;
+  final int id;
+
+  const PozisyonPage({Key? key, required  this.adsoyad, required this.id,}) : super(key: key);
+
+
 
   @override
   State<PozisyonPage> createState() => _PozisyonPageState();
@@ -19,9 +22,7 @@ class PozisyonPage extends StatefulWidget {
 class _PozisyonPageState extends State<PozisyonPage> {
 
   PositionModel? positionModel;
-  Iterable<Data> data = [];
   String url=apiUrl;
-
 
   @override
   void initState() {
@@ -30,8 +31,7 @@ class _PozisyonPageState extends State<PozisyonPage> {
   }
 
   Future<void> pozisyonlar() async {
-    final response = await http.get(
-        Uri.parse("$url/position"));
+    final response = await http.get(Uri.parse("$url/position"));
     if (response.statusCode == 200) {
       print(response.body);
       setState(() {
@@ -41,6 +41,7 @@ class _PozisyonPageState extends State<PozisyonPage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,50 +49,71 @@ class _PozisyonPageState extends State<PozisyonPage> {
         title: Text("İş Pozisyonları"),
         centerTitle: true,
         backgroundColor: Colors.brown,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-            onPressed: (){
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage(email: widget.email, password: widget.password,)));
-            },
-        ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
+
+      body: Padding(
+        padding: const EdgeInsets.all(13.0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
           child: Column(
             children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height,
+              Container(
+                height: MediaQuery.of(context).size.height *0.85,
                 child: ListView.builder(
-                    //shrinkWrap: true,
+                  itemExtent: 100,
                     itemCount: positionModel?.data?.length ?? 0,
                     itemBuilder: (BuildContext context ,int index) {
                       Data? d =positionModel?.data?.elementAt(index);
                       return GestureDetector(
                         onTap: (){
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> BasvuruPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> PozisyonDetay(data: d)));
                         },
                         child: Card(
-                            child: ListTile(
-
-                              title:Text.rich(
-                                TextSpan(
-                                  text: 'Pozisyon Adı: ',style: TextStyle(fontWeight: FontWeight.w500),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                      text: '${d!.unvan.toString()}',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.grey[600], // değiştirmek istediğiniz renk
-                                      ),
+                          child: ListTile(
+                            title:Text.rich(
+                              TextSpan(
+                                text: 'Pozisyon Adı: ',style: TextStyle(fontWeight: FontWeight.w500),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '${d!.unvan.toString()}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      color: Colors.grey[600], // değiştirmek istediğiniz renk
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                              subtitle: Text("Min Deneyim: ${d.deneyimYili} yıl"),
                             ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top:10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text.rich(
+                                    TextSpan(text: "Talebi Oluşturan : ",style: TextStyle(color: Colors.black),
+                                        children: [
+                                          TextSpan(text: '${d.yetkili}', style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            color: Colors.grey[600], // değiştirmek istediğiniz renk
+                                          ),),
+                                        ]),
+                                  ),
+                                  SizedBox(height: 8,),
+                                  Text.rich(
+                                    TextSpan(text: "Min Deneyim :",style: TextStyle(color: Colors.black),
+                                        children: [
+                                          TextSpan(text: ' ${d.deneyimYili} yıl', style: TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            color: Colors.grey[600], // değiştirmek istediğiniz renk
+                                          ),),
+                                        ]),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)
+                              borderRadius: BorderRadius.circular(15)
                           ) ,
                         ),
                       );
@@ -100,6 +122,17 @@ class _PozisyonPageState extends State<PozisyonPage> {
               ),
             ],
           ),
+        ),
+      ),
+      floatingActionButton: Container(
+        height: 56,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>PozisyonEkle(adsoyad:widget.adsoyad, id: widget.id,)));
+         print("posiyon ekleye gitti");
+          },
+          child: Icon(Icons.add),
+          backgroundColor: Colors.brown,
         ),
       ),
     );
