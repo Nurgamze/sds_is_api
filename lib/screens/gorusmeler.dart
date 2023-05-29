@@ -6,7 +6,7 @@ import 'package:sds_is_platformu/model/gorusmelerModel.dart';
 import '../const/sabitler.dart';
 import 'package:http/http.dart' as http;
 
-import '../model/yetkiliModel.dart';
+
 
 class GorusmelerPage extends StatefulWidget {
   final String email;
@@ -20,21 +20,24 @@ class GorusmelerPage extends StatefulWidget {
 
 class _GorusmelerPageState extends State<GorusmelerPage> {
 
-  YetkiliModel? yetkiliModel;
-  List<Yetkili?> yetkilisList = [];
-  List<Yetkili?> filteredYetkilisList = [];
-  List<Gorusme?> filteredGorusmeList = [];
-
-  TextEditingController notCont = TextEditingController();
-  TextEditingController searchYetkiliController = TextEditingController();
-  TextEditingController searchIsletmeController = TextEditingController();
-  TextEditingController searchAdayController = TextEditingController();
-  TextEditingController searchPozisyonController = TextEditingController();
-
   GorusmeModel? gorusmeModel;
   List<Gorusme?> gorusmeList = [];
-  String url = apiUrl;
+  List<Gorusme?> filteredGorusmeList = [];
 
+
+  TextEditingController notCont = TextEditingController();
+  final searchYetkiliController = TextEditingController();
+  final searchIsletmeController = TextEditingController();
+  final searchAdayController = TextEditingController();
+  final searchPozisyonController = TextEditingController();
+  final searchDateController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    gorusmeler();
+  }
+  String url = apiUrl;
 
   Future<void> gorusmeler() async {
     final response = await http.get(Uri.parse("$url/gorusmeler"));
@@ -47,13 +50,26 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
       filteredGorusmeList=gorusmeList;
     });
   }
-  void filterYetkili(String query) {
+  void filterGorusmeYetkili(String query) {
     setState(() {
-      filteredGorusmeList = gorusmeList
-          .where((yetkili) => yetkili!.degerlendirme!.toLowerCase().contains(query.toLowerCase())).toList();
+      filteredGorusmeList = gorusmeList.where((gorusme) => gorusme!.yetkiliID!.toLowerCase().contains(query.toLowerCase())).toList();
     });
   }
-
+  void filterGorusmeIsletme(String query) {
+    setState(() {
+      filteredGorusmeList = gorusmeList.where((gorusme) => gorusme!.isletmeID!.toLowerCase().contains(query.toLowerCase())).toList();
+    });
+  }
+  void filterGorusmeAday(String query) {
+    setState(() {
+      filteredGorusmeList = gorusmeList.where((gorusme) => gorusme!.adayID!.toLowerCase().contains(query.toLowerCase())).toList();
+    });
+  }
+  void filterGorusmePozisyon(String query) {
+    setState(() {
+      filteredGorusmeList = gorusmeList.where((gorusme) => gorusme!.pozisyonID!.toLowerCase().contains(query.toLowerCase())).toList();
+    });
+  }
   void _showDialog(Gorusme gorusme) {
     showDialog(
       context: context,
@@ -69,7 +85,6 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
               onPressed: () async {
                 final response = await http.post(Uri.parse('$url/insertnot/${gorusme.id}'),
                     body: {'degerlendirme': notCont.text});
-
                 if (response.statusCode == 201) {
                   gorusmeler();
                 } else {
@@ -94,13 +109,6 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    gorusmeler();
-
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -109,6 +117,7 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
         backgroundColor: Colors.brown,
       ),
       body: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -131,78 +140,24 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                         ),
                       ),
                       onChanged: (value) {
-                        filterYetkili(value);
+                        filterGorusmeYetkili(value);
                       },
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width:MediaQuery.of(context).size.width * 0.2,
-                    height: 40,
-                    child: TextFormField(
-                      controller: searchIsletmeController,
-                      decoration: InputDecoration(
-                         filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'İşletme Ara',
-                        prefixIcon:Icon(Icons.search,size: 20,),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        //filterYetkili(value);
-                      },
+                TextFormField(
+                  controller: searchDateController,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: 'Tarihleri Seçin',
+                    prefixIcon: Icon(Icons.calendar_today),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width:MediaQuery.of(context).size.width * 0.2,
-                    height: 40,
-                    child: TextFormField(
-                      controller: searchAdayController,
-                      decoration: InputDecoration(
-                         filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'Aday Ara',
-                        prefixIcon:Icon(Icons.search,size: 20,),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        //filterYetkili(value);
-                      },
-                    ),
-                  ),
-                ),
+                )
 
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width:MediaQuery.of(context).size.width * 0.2,
-                    height: 40,
-                    child: TextFormField(
-                      controller: searchPozisyonController,
-                      decoration: InputDecoration(
-                         filled: true,
-                        fillColor: Colors.white,
-                        hintText: 'Pozisyon Ara',
-                        prefixIcon:Icon(Icons.search,size: 20,),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        //filterYetkili(value);
-                      },
-                    ),
-                  ),
-                ),
               ],
             ),
             SingleChildScrollView(
@@ -217,20 +172,30 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                   DataColumn(label: Text('Saat')),
                   DataColumn(label: Text('Değerlendirme')),
                 ],
-                rows: gorusmeList.map((gorusme) => DataRow(
+                rows: filteredGorusmeList.map((gorusme) => DataRow(
                   cells: [
                     DataCell(Text(gorusme!.yetkiliID!)),
                     DataCell(Text(gorusme!.isletmeID!.split(" ").take(2).join( " "))), // 2 kelimesini alır sadece
                     DataCell(Text(gorusme.adayID!)),
                     DataCell(Text(gorusme.pozisyonID!)),
-                    DataCell(Text(DateFormat('dd/MM/yyyy').format(DateTime.parse(gorusme.tarih.toString())))),
+                    DataCell(GestureDetector(
+                      child: Text(DateFormat('dd/MM/yyyy').format(DateTime.parse(gorusme.tarih.toString()))),
+                    ),),
                     DataCell(Text(DateFormat('HH:mm').format(DateTime.parse(gorusme.saat!.toString())))),
                     DataCell(
                       GestureDetector(
-                        child: gorusme.degerlendirme != null ? Text(gorusme.degerlendirme!) : ElevatedButton(onPressed: () {}, child: Text('Not Ekle')),
-                        onLongPress: () {
-                          _showDialog(gorusme);
-                        },
+                        child: gorusme.degerlendirme != null ?
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          Text(gorusme.degerlendirme!),
+                          SizedBox(width: 15,),
+                          ElevatedButton(onPressed: (){
+                               _showDialog(gorusme);
+                          },
+                            child: Text('Not Düzenle '),
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow.shade800),)
+                        ],) : ElevatedButton(onPressed: () {}, child: Text('Not Ekle')),
                       ),
                     ),
                   ],

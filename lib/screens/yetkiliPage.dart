@@ -40,6 +40,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
     if (response.statusCode == 200) {
       print(response.body);
     }
+
     setState(() {
       yetkiliModel = YetkiliModel.fromJson(jsonDecode(response.body));
       yetkilisList = yetkiliModel!.yetkili!;
@@ -51,6 +52,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
     setState(() {
       filteredYetkilisList = yetkilisList
           .where((yetkili) => yetkili!.adsoyad!.toLowerCase().contains(query.toLowerCase())).toList();
+       print(filteredYetkilisList.length); //
     });
   }
 
@@ -113,12 +115,12 @@ class _YetkiliPageState extends State<YetkiliPage> {
                          iconSize: 30,
                          onPressed: () {
                            bool superyetkili=false;
-                           for (var i = 0; i < yetkilisList.length; i++) {
+                          /* for (var i = 0; i < yetkilisList.length; i++) {
                              if (yetkilisList[i]?.superyetkili == true) {
                                superyetkili = true;
                                break;
                              }
-                           }
+                           }*/
                            //kullanıcı süper yetkiliyse yetkili ekleyebilsin
                            if(superyetkili){
                              Navigator.push(context, MaterialPageRoute(
