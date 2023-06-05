@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                               }
                             }
                             if(isAutherized){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email:widget.email,password:widget.password)));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email:widget.email,password:widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
                             }
                             else{
                               showDialog(

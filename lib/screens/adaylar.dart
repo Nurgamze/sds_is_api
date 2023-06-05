@@ -14,7 +14,6 @@ import 'homePage.dart';
 import 'insertAday.dart';
 
 
-
 class AdaylarPage extends StatefulWidget {
   final String email;
   final String password;
@@ -95,7 +94,6 @@ class _AdaylarPageState extends State<AdaylarPage> {
   void initState() {
     super.initState();
     adaylar();}
-
 
   @override
   Widget build(BuildContext context) {

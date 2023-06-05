@@ -5,14 +5,16 @@ import 'package:http/http.dart' as http;
 import 'package:sds_is_platformu/screens/insertYetkili.dart';
 import '../const/sabitler.dart';
 import '../model/yetkiliModel.dart' show Yetkili, YetkiliModel;
+import 'homePage.dart';
 
 
 class YetkiliPage extends StatefulWidget {
   final String email;
   final String password;
-  //final String adsoyad;
+  final String adsoyad;
+  final int id;
 
-  const YetkiliPage({Key? key, required this.email, required this.password}) : super(key: key);
+  const YetkiliPage({Key? key, required this.email, required this.password, required this.adsoyad, required this.id}) : super(key: key);
 
   @override
   State<YetkiliPage> createState() => _YetkiliPageState();
@@ -63,6 +65,11 @@ class _YetkiliPageState extends State<YetkiliPage> {
          title: Text('Yetkililer'),
          centerTitle: true,
          backgroundColor: Colors.brown,
+           leading: IconButton(
+             icon: Icon(Icons.arrow_back),
+             onPressed: (){
+               Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage(email: widget.email, password: widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
+             },)
        ),
        body: SingleChildScrollView(
          child: Column(
@@ -123,8 +130,8 @@ class _YetkiliPageState extends State<YetkiliPage> {
                            }*/
                            //kullanıcı süper yetkiliyse yetkili ekleyebilsin
                            if(superyetkili){
-                             Navigator.push(context, MaterialPageRoute(
-                                 builder: (context) => InsertYetkili(email: widget.email, password: widget.password,),));
+                            // Navigator.push(context, MaterialPageRoute(
+                               //  builder: (context) => InsertYetkili(email: widget.email, password: widget.password,),));
                            }
                            else{
                              showDialog(context: context, builder: (BuildContext context){
@@ -132,7 +139,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                  content: Text("Yetkiniz bulunmamaktadır"),
                                  actions: [
                                    ElevatedButton(onPressed: (){
-                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
+                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
                                    }, child: Text("Tamam"))
                                  ],
                                );
@@ -214,7 +221,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                                    'password':passwordController.text,
                                                  });
                                              if(response.statusCode==201){
-                                               Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
+                                               Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,adsoyad: widget.adsoyad, id: widget.id,)));
                                              }
                                            }
                                            setState(() {
@@ -225,7 +232,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.grey[400])),
                                          ),
                                          ElevatedButton(onPressed: (){
-                                           Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
+                                           Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,adsoyad: widget.adsoyad, id: widget.id,)));
                                          }, child: Text("İptal"),
                                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.grey[400])),
                                          )
@@ -244,7 +251,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                      if(response.statusCode==201){
                                        print(response.body);
                                      }
-                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,)));
+                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email: widget.email, password: widget.password,adsoyad: widget.adsoyad, id: widget.id,)));
                                    }
                                    setState(() {
                                      deleteYetkili();

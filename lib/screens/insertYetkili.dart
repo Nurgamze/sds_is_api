@@ -8,10 +8,12 @@ import 'package:sds_is_platformu/screens/yetkiliPage.dart';
 
 class InsertYetkili extends StatefulWidget {
 
-  const InsertYetkili({Key? key, required this.email, required this.password,}) : super(key: key);
+  const InsertYetkili({Key? key, required this.email, required this.password, required this.adsoyad, required this.id,}) : super(key: key);
 
   final String email;
   final String password;
+  final String adsoyad;
+  final int id;
 
   @override
   State<InsertYetkili> createState() => _InsertYetkiliState();
@@ -48,7 +50,7 @@ class _InsertYetkiliState extends State<InsertYetkili> {
     );
     print("sbdv${response.body}");
     if(response.statusCode==201){
-      Navigator.push(context, MaterialPageRoute(builder: (context) =>YetkiliPage(email: widget.email, password: widget.password,) ));
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>YetkiliPage(email: widget.email, password: widget.password,adsoyad: widget.adsoyad, id: widget.id,) ));
     }
     else{
       showDialog(

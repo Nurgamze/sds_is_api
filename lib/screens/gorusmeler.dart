@@ -6,8 +6,6 @@ import 'package:sds_is_platformu/model/gorusmelerModel.dart';
 import '../const/sabitler.dart';
 import 'package:http/http.dart' as http;
 
-
-
 class GorusmelerPage extends StatefulWidget {
   final String email;
   final String password;
@@ -17,20 +15,18 @@ class GorusmelerPage extends StatefulWidget {
   @override
   State<GorusmelerPage> createState() => _GorusmelerPageState();
 }
-
 class _GorusmelerPageState extends State<GorusmelerPage> {
 
   GorusmeModel? gorusmeModel;
   List<Gorusme?> gorusmeList = [];
   List<Gorusme?> filteredGorusmeList = [];
 
-
   TextEditingController notCont = TextEditingController();
   final searchYetkiliController = TextEditingController();
   final searchIsletmeController = TextEditingController();
   final searchAdayController = TextEditingController();
   final searchPozisyonController = TextEditingController();
-  final searchDateController = TextEditingController();
+  //final searchDateController = TextEditingController();
 
   @override
   void initState() {
@@ -38,6 +34,8 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
     gorusmeler();
   }
   String url = apiUrl;
+  DateTime? selectedBaslangic;
+  DateTime? selectedBitis;
 
   Future<void> gorusmeler() async {
     final response = await http.get(Uri.parse("$url/gorusmeler"));
@@ -70,6 +68,52 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
       filteredGorusmeList = gorusmeList.where((gorusme) => gorusme!.pozisyonID!.toLowerCase().contains(query.toLowerCase())).toList();
     });
   }
+
+  void filterGorusmeTarih(DateTime? baslangic, DateTime? bitis) {
+    setState(() {
+      if (baslangic != null && bitis != null) {
+        filteredGorusmeList = gorusmeList.where((gorusme) {
+          final gorusmeTarihi = DateTime.parse(gorusme!.tarih!);
+          return gorusmeTarihi.isAfter(baslangic.subtract(Duration(days: 1))) &&
+              gorusmeTarihi.isBefore(bitis.add(Duration(days: 1)));
+        }).toList();
+      } else {
+        filteredGorusmeList = gorusmeList;
+      }
+    });
+  }
+
+  void showBaslangicDatePicker() async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        selectedBaslangic = pickedDate;
+
+      });
+      filterGorusmeTarih(selectedBaslangic, selectedBitis);
+    }
+  }
+
+  void showBitisDatePicker() async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+    if (pickedDate != null) {
+      setState(() {
+        selectedBitis = pickedDate;
+      });
+      filterGorusmeTarih(selectedBaslangic, selectedBitis);
+    }
+  }
+
   void _showDialog(Gorusme gorusme) {
     showDialog(
       context: context,
@@ -107,7 +151,6 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
       },
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,14 +169,14 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    width:MediaQuery.of(context).size.width * 0.2,
+                    width:MediaQuery.of(context).size.width * 0.45,
                     height: 40,
                     child: TextFormField(
                       controller: searchYetkiliController,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
-                        hintText: 'Yetkili Ara',
+                        hintText: 'Yetkili Ara',hintStyle: TextStyle(color: Colors.grey,),contentPadding: EdgeInsets.symmetric(vertical: 8.0, ),
                         prefixIcon:Icon(Icons.search,size: 20,),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -145,19 +188,92 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                     ),
                   ),
                 ),
-                TextFormField(
-                  controller: searchDateController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    hintText: 'Tarihleri Seçin',
-                    prefixIcon: Icon(Icons.calendar_today),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width:MediaQuery.of(context).size.width * 0.45,
+                    height: 40,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'İşletme Ara', hintStyle: TextStyle(color: Colors.grey,),contentPadding: EdgeInsets.symmetric(vertical: 8.0,),
+                        prefixIcon:Icon(Icons.search,size: 20,),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        filterGorusmeIsletme(value);
+                      },
                     ),
                   ),
-                )
-
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width:MediaQuery.of(context).size.width * 0.45,
+                    height: 40,
+                    child: TextFormField(
+                      controller: searchAdayController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Aday Ara', hintStyle: TextStyle(color: Colors.grey,),contentPadding: EdgeInsets.symmetric(vertical: 8.0, ),
+                        prefixIcon:Icon(Icons.search,size: 20,),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        filterGorusmeAday(value);
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width:MediaQuery.of(context).size.width * 0.48,
+                      height: 40,
+                      child: TextFormField(
+                        controller: searchPozisyonController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: 'Pozisyon Ara', hintStyle: TextStyle(color: Colors.grey,),contentPadding: EdgeInsets.symmetric(vertical: 8.0, ),
+                          prefixIcon:Icon(Icons.search,size: 20,),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          filterGorusmePozisyon(value);
+                        },
+                      ),
+                    ),
+                ),
+                ElevatedButton(
+                  onPressed: (){
+                    showBaslangicDatePicker();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Başlangıç Tarihi'),
+                  ),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+                ),
+                SizedBox(width: 10,),
+                ElevatedButton(
+                  onPressed: (){
+                    showBitisDatePicker();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Bitiş Tarihi'),
+                  ),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+                ),
               ],
             ),
             SingleChildScrollView(
