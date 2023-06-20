@@ -101,7 +101,7 @@ class _AdaylarPageState extends State<AdaylarPage> {
         appBar: AppBar(
           title: Text("Adaylar"),
           centerTitle: true,
-          backgroundColor: Colors.brown,
+          backgroundColor:Color(0xFF0E47A1),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: (){
@@ -149,7 +149,7 @@ class _AdaylarPageState extends State<AdaylarPage> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(12.0),
                                       child: Text("CV Yükle"),
-                                    ),style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),),
+                                    ),style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1),),),
                                 ),),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -161,7 +161,7 @@ class _AdaylarPageState extends State<AdaylarPage> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(12.0),
                                       child: Text("Düzenle"),
-                                    ),style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),),
+                                    ),style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1),),),
                                 ),
                               ),
                               Padding(
@@ -179,7 +179,7 @@ class _AdaylarPageState extends State<AdaylarPage> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Text("Sil"),
-                                      ),style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),),
+                                      ),style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1),),)
                                 ),
                               ),],);});
                       }
@@ -194,7 +194,7 @@ class _AdaylarPageState extends State<AdaylarPage> {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>AdayEkle(email: widget.email, password: widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
             },
             child: Icon(Icons.add),
-            backgroundColor: Colors.brown,
+            backgroundColor:Color(0xFF0EF6C00),
           ),)
     );
   }

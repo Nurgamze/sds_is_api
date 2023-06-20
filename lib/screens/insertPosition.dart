@@ -13,10 +13,11 @@ import '../model/positionModel.dart';
 class PozisyonEkle extends StatefulWidget {
 
   final String adsoyad;
+  final String email;
+  final String password;
   final int id;
 
-  const PozisyonEkle({Key? key, required this.adsoyad,required this.id}) : super(key: key);
-
+  const PozisyonEkle({Key? key, required this.adsoyad,required this.id, required this.email, required this.password}) : super(key: key);
   @override
   State<PozisyonEkle> createState() => _PozisyonEkleState();
 }
@@ -146,7 +147,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
             content: Text("Pozisyon açılmıştır."),
               actions: [
                 ElevatedButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PozisyonPage(adsoyad: widget.adsoyad, id: widget.id)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PozisyonPage(adsoyad: widget.adsoyad, id: widget.id, email: widget.email, password: widget.password,)));
                 }, child: Text("Tamam"))
               ],
             );
@@ -160,7 +161,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
               content: Text("Pozisyon açılırken hata oluştu. Lütfen tekrar deneyiniz."),
               actions: [
                 ElevatedButton(onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PozisyonEkle(adsoyad: widget.adsoyad, id: widget.id,)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PozisyonEkle(adsoyad: widget.adsoyad, id: widget.id, email: widget.email, password: widget.password,)));
                 }, child: Text("Tamam"))
               ],
             );
@@ -175,7 +176,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
       appBar: AppBar(
         title: Text("Pozisyon Aç"),
         centerTitle: true,
-        backgroundColor: Colors.brown,
+        backgroundColor: Color(0xFF0E47A1),
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -402,7 +403,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
                   Row(
                     children: [
                       Text("Şehir:",style: TextStyle(fontSize: 16),),
-                      SizedBox(width: 75,),
+                      SizedBox(width: 65,),
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Column(
@@ -434,7 +435,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
                   Row(
                     children: [
                       Text("Mezuniyet:",style: TextStyle(fontSize: 16),),
-                      SizedBox(width: 40,),
+                      SizedBox(width: 30,),
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Column(
@@ -470,13 +471,13 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
                   Row(
                     children: [
                       Text("İşletme:",style: TextStyle(fontSize: 16),),
-                      SizedBox(width: 50,),
+                      SizedBox(width: 40,),
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Column(
                           children: [
                             Container(
-                              width:MediaQuery.of(context).size.width * 0.68,
+                              width:MediaQuery.of(context).size.width * 0.65,
                               child: DropdownButton(
                                 isExpanded: true,
                                 hint: Text("İşletme Merkezi Seç"),
@@ -488,7 +489,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
                                   });
                                 },
                                 items: isletmeList?.map((isletme) => DropdownMenuItem(
-                                  child: Text(isletme.unvan.toString()),
+                                  child: Text(isletme.unvan.toString().split(" ").take(5).join(" ")),
                                   value: isletme.id,
                                 )).toList(),
                               ),
@@ -514,7 +515,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: Text("Pozisyon Aç",style: TextStyle(fontSize: 18),),
                       ),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+                      style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1),),
                     ),
                   ),
                   SizedBox(

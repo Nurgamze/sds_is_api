@@ -22,7 +22,7 @@ class _PozisyonDetayState extends State<PozisyonDetay> {
       appBar: AppBar(
         title: Text("${widget.data.unvan}"),
         centerTitle: true,
-        backgroundColor: Colors.brown,
+        backgroundColor: Color(0xFF0E47A1),
 
 
       ),

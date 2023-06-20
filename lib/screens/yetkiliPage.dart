@@ -64,7 +64,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
        appBar: AppBar(
          title: Text('Yetkililer'),
          centerTitle: true,
-         backgroundColor: Colors.brown,
+           backgroundColor: Color(0xFF0E47A1),
            leading: IconButton(
              icon: Icon(Icons.arrow_back),
              onPressed: (){
@@ -118,20 +118,19 @@ class _YetkiliPageState extends State<YetkiliPage> {
                          borderRadius: BorderRadius.circular(10)
                        ),
                        child: IconButton(
-                         icon: Icon( Icons.add,color: Colors.brown,),
+                         icon: Icon( Icons.add,color: Color(0xFF0E47A1),),
                          iconSize: 30,
                          onPressed: () {
                            bool superyetkili=false;
-                          /* for (var i = 0; i < yetkilisList.length; i++) {
+                          for (var i = 0; i < yetkilisList.length; i++) {
                              if (yetkilisList[i]?.superyetkili == true) {
                                superyetkili = true;
                                break;
                              }
-                           }*/
+                           }
                            //kullanıcı süper yetkiliyse yetkili ekleyebilsin
                            if(superyetkili){
-                            // Navigator.push(context, MaterialPageRoute(
-                               //  builder: (context) => InsertYetkili(email: widget.email, password: widget.password,),));
+                             Navigator.push(context, MaterialPageRoute(builder: (context) => InsertYetkili(email: widget.email, password: widget.password,adsoyad: widget.adsoyad, id: widget.id,)));
                            }
                            else{
                              showDialog(context: context, builder: (BuildContext context){
@@ -241,7 +240,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                    });
                                  },
                                    child: Text("Düzenle"),
-                                   style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),)),
+                                   style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1),),)),
                              SizedBox(height: 10,),
                              SizedBox( height:40,
                                  width:MediaQuery.of(context).size.width * 0.8,
@@ -258,7 +257,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                                    });
                                  },
                                    child: Text("Sil"),
-                                   style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),)),
+                                   style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1),),)),
                            ],
                          )
                        );

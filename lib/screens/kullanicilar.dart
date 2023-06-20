@@ -121,7 +121,7 @@ class _KullanicilarPageState extends State<KullanicilarPage> {
       appBar: AppBar(
         title: Text('Kullanıcılar'),
         centerTitle: true,
-        backgroundColor: Colors.brown,
+        backgroundColor: Color(0xFF0E47A1),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {

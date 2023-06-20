@@ -196,7 +196,7 @@ class _AdayEkleState extends State<AdayEkle> {
       appBar: AppBar(
         title: Text("Aday Ekle"),
         centerTitle: true,
-        backgroundColor: Colors.brown,
+        backgroundColor: Color(0xFF0E47A1),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -638,7 +638,7 @@ class _AdayEkleState extends State<AdayEkle> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: Text("Aday Ekle",style: TextStyle(fontSize: 18),),
                       ),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+                      style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1),),
                     ),
                   ),
                   SizedBox(

@@ -9,9 +9,11 @@ import 'pozisyonDetay.dart';
 
 class PozisyonPage extends StatefulWidget {
   final String adsoyad;
+  final String email;
+  final String password;
   final int id;
 
-  const PozisyonPage({Key? key, required  this.adsoyad, required this.id,}) : super(key: key);
+  const PozisyonPage({Key? key, required  this.adsoyad, required this.id, required this.email, required this.password,}) : super(key: key);
 
 
 
@@ -48,7 +50,7 @@ class _PozisyonPageState extends State<PozisyonPage> {
       appBar: AppBar(
         title: Text("İş Pozisyonları"),
         centerTitle: true,
-        backgroundColor: Colors.brown,
+        backgroundColor: Color(0xFF0E47A1),
       ),
 
       body: Padding(
@@ -128,11 +130,11 @@ class _PozisyonPageState extends State<PozisyonPage> {
         height: 56,
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>PozisyonEkle(adsoyad:widget.adsoyad, id: widget.id,)));
-         print("posiyon ekleye gitti");
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>PozisyonEkle(adsoyad: widget.adsoyad, id: widget.id, email: widget.email, password: widget.password,)));
+         print("pozisyon ekleye gitti");
           },
           child: Icon(Icons.add),
-          backgroundColor: Colors.brown,
+          backgroundColor:Color(0xFF0EF6C00),
         ),
       ),
     );

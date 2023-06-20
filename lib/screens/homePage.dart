@@ -24,11 +24,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-   bool isAutherized= false;
+  bool isAutherized= false;
 
   YetkiliModel? yetkiliModel;
   List<Yetkili?> yetkilisList = [];
-   String url=apiUrl;
+  String url=apiUrl;
 
   @override
   void initState() {
@@ -36,17 +36,17 @@ class _HomePageState extends State<HomePage> {
     yetkili();
   }
 
-   Future<YetkiliModel?> yetkili() async {
-     final response = await http.get(Uri.parse("$url/yetkili"),);
-     if(response.statusCode == 200) {
-       setState(() {
-         yetkiliModel = YetkiliModel.fromJson(jsonDecode(response.body));
-         yetkilisList = yetkiliModel!.yetkili!;
-       });
-     } else {
-       throw Exception('API bağlantı sorunu. Hata kodu: ${response.statusCode}');
-     }
-   }
+  Future<YetkiliModel?> yetkili() async {
+    final response = await http.get(Uri.parse("$url/yetkili"),);
+    if(response.statusCode == 200) {
+      setState(() {
+        yetkiliModel = YetkiliModel.fromJson(jsonDecode(response.body));
+        yetkilisList = yetkiliModel!.yetkili!;
+      });
+    } else {
+      throw Exception('API bağlantı sorunu. Hata kodu: ${response.statusCode}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,251 +55,312 @@ class _HomePageState extends State<HomePage> {
 
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("SDS"),
-        centerTitle: true,
-        backgroundColor: Colors.brown,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage(email: widget.email, password: widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
-          },
+        appBar: AppBar(
+          title: Text("SDS"),
+          centerTitle: true,
+            backgroundColor: Color(0xFF0E47A1),
+            automaticallyImplyLeading: false //leadingde otomatik oluşan geri ikonunu kaldırmak için
         ),
-      ),
 
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-            child:SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: (){
-                            for(var i=0 ; i<yetkilisList.length;i++){
-                              if(yetkilisList[i]?.email==widget.email && yetkilisList[i]?.password==widget.password){
-                                isAutherized=true;
-                                break;
-                              }
+        body: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child:SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: (){
+                          for(var i=0 ; i<yetkilisList.length;i++){
+                            if(yetkilisList[i]?.email==widget.email && yetkilisList[i]?.password==widget.password){
+                              isAutherized=true;
+                              break;
                             }
-                            if(isAutherized){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email:widget.email,password:widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
-                            }
-                            else{
-                              showDialog(
-                                  context: context, builder: (BuildContext context){
-                                return AlertDialog(
-                                  title: Text("Hata"),
-                                  content: Text("Yetkiniz Bulunmamaktadır!"),
-                                  actions: [
-                                    ElevatedButton(onPressed: (){
-                                      setState(() {
-                                        Navigator.pop(context);
-                                      });
+                          }
+                          if(isAutherized){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>YetkiliPage(email:widget.email,password:widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
+                          }
+                          else{
+                            showDialog(
+                                context: context, builder: (BuildContext context){
+                              return AlertDialog(
+                                title: Text("Hata"),
+                                content: Text("Yetkiniz Bulunmamaktadır!"),
+                                actions: [
+                                  ElevatedButton(onPressed: (){
+                                    setState(() {
+                                      Navigator.pop(context);
+                                    });
 
-                                    }, child: Text("Tamam"),
+                                  }, child: Text("Tamam"),
                                     style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[500]),)
-                                  ],
-                                );
-                              });
-                            }
-                          },
+                                ],
+                              );
+                            });
+                          }
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: SizedBox(
+                            width: 180,
+                            height: 100,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 7,
+                                    offset: Offset(0,3),
+                                  ),
+                                ],
+                              ),
+                              child: Card(
+                                color: Colors.grey[300],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                          alignment: Alignment.topLeft,
+                                        child: Text("Yetkililer",style: TextStyle(fontSize:16 ),)
+                                    ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Icon(Icons.supervisor_account_outlined ,size: 26,color: Color(0xFF0E47A1),),
+                                      ),
+                                   ]
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>PozisyonPage(adsoyad: widget.adsoyad, id: widget.id, email: widget.email, password: widget.password,)));
+                      },
+                        child: SizedBox(
+                          height: 100,
+                          width: 180,
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(30),
-                            child: SizedBox(
-                              width: 180,
-                              height: 100,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 7,
-                                      offset: Offset(0,3),
-                                    ),
-                                  ],
-                                ),
-                                child: Card(
-                                  color: Colors.grey[300],
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Text("Yetkililer",style: TextStyle(fontSize:17 ),),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Card(
+                                color: Colors.grey[300],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text("İş Pozisyonları",style: TextStyle(fontSize: 16),),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Icon(Icons.account_balance ,size: 26,color: Color(0xFF0E47A1),),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        GestureDetector(onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>PozisyonPage(adsoyad:widget.adsoyad, id: widget.id,)));
-                        },
-                          child: SizedBox(
-                            height: 100,
-                            width: 180,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 7,
-                                      offset: Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Card(
-                                  color: Colors.grey[300],
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Text("İş Pozisyonları",style: TextStyle(fontSize:17 ),),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Row(
-                      children: [
-                        GestureDetector(onTap: (){
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=>AdaylarPage(email: widget.email, password: widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
-                        },
-                          child: SizedBox(
-                            height: 100,
-                            width: 180,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 7,
-                                      offset: Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Card(
-                                  color: Colors.grey[300],
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Text("Adaylar",style: TextStyle(fontSize:17 ),),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Row(
+                    children: [
+                      GestureDetector(onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>AdaylarPage(email: widget.email, password: widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
+                      },
+                        child: SizedBox(
+                          height: 100,
+                          width: 180,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Card(
+                                color: Colors.grey[300],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text("Adaylar",style: TextStyle(fontSize: 16),),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Icon(Icons.person ,size: 26,color: Color(0xFF0E47A1),),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        GestureDetector(onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>GorusmelerPage(email:widget.email,password:widget.password)));
-                        },
-                          child: SizedBox(
-                            height: 100,
-                            width: 180,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 7,
-                                      offset: Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Card(
-                                  color: Colors.grey[300],
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Text("Görüşmeler",style: TextStyle(fontSize:17 ),),
+                      ),
+                      GestureDetector(onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>GorusmelerPage(adsoyad: widget.adsoyad, id: widget.id, email: widget.email, password: widget.password,)));
+                      },
+                        child: SizedBox(
+                          height: 100,
+                          width: 180,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Card(
+                                color: Colors.grey[300],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text("Görüşmeler",style: TextStyle(fontSize: 16),),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Icon(Icons.language ,size: 26,color: Color(0xFF0E47A1),),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
-                    child: Row(
-                      children: [
-                        GestureDetector(onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>IsletmelerPage(email:widget.email,password:widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
-                        },
-                          child: SizedBox(
-                            height: 100,
-                            width: 180,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 7,
-                                      offset: Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Card(
-                                  color: Colors.grey[300],
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Text("İşletmeler",style: TextStyle(fontSize:17 ),),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+                  child: Row(
+                    children: [
+                      GestureDetector(onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>IsletmelerPage(email:widget.email,password:widget.password, adsoyad: widget.adsoyad, id: widget.id,)));
+                      },
+                        child: SizedBox(
+                          height: 100,
+                          width: 180,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Card(
+                                color: Colors.grey[300],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text("İşletmeler",style: TextStyle(fontSize: 16),),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Icon(Icons.apartment ,size: 26,color: Color(0xFF0E47A1),),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        GestureDetector(onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>KullanicilarPage(email:widget.email,password:widget.password, adsoyad: widget.adsoyad, id:widget.id)));
-                        },
-                          child: SizedBox(
-                            height: 100,
-                            width: 180,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(30),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 7,
-                                      offset: Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Card(
-                                  color: Colors.grey[300],
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Text("Kullanıcılar",style: TextStyle(fontSize:17 ),),
+                      ),
+                      GestureDetector(onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>KullanicilarPage(email:widget.email,password:widget.password, adsoyad: widget.adsoyad, id:widget.id)));
+                      },
+                        child: SizedBox(
+                          height: 100,
+                          width: 180,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Card(
+                                color: Colors.grey[300],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text("Kullanıcılar",style: TextStyle(fontSize: 16),),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Icon(Icons.supervisor_account ,size: 26,color: Color(0xFF0E47A1),),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          )
+          ),
+        )
     );
   }
 }

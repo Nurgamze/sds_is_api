@@ -61,7 +61,6 @@ class _InsertYetkiliState extends State<InsertYetkili> {
           actions: [
             ElevatedButton(onPressed: (){
               setState(() {
-
                 Navigator.pop(context);
               });
             }, child: Text("Tamam"))
@@ -77,7 +76,7 @@ class _InsertYetkiliState extends State<InsertYetkili> {
         appBar: AppBar(
           title: Text("Yetkili Ekle"),
           centerTitle: true,
-          backgroundColor: Colors.brown,
+          backgroundColor:Color(0xFF0E47A1),
         ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -145,7 +144,8 @@ class _InsertYetkiliState extends State<InsertYetkili> {
                   child: Text("Yetkili Ekle",style: TextStyle(fontSize: 15),),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.brown)
+                  backgroundColor:Color(0xFF0E47A1)
+                )
                 ),
               )
             ],

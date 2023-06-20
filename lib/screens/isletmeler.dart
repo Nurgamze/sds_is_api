@@ -48,7 +48,7 @@ class _IsletmelerPageState extends State<IsletmelerPage> {
         appBar: AppBar(
           title: Text("İşletmeler"),
           centerTitle: true,
-          backgroundColor: Colors.brown,
+          backgroundColor:Color(0xFF0E47A1),
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
@@ -210,7 +210,8 @@ class _IsletmelerPageState extends State<IsletmelerPage> {
                   });
             },
             child: Icon(Icons.add),
-            backgroundColor: Colors.brown,
+            backgroundColor: Color(0xFF0EF6C00),
+
           ),
         ));
   }
