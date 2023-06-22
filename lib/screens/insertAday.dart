@@ -84,10 +84,10 @@ class _AdayEkleState extends State<AdayEkle> {
         cinsiyetController.text.isEmpty ||ehliyetController.text.isEmpty ||
         askerlikController.text.isEmpty ||sigaraController.text.isEmpty ||
         alkolController.text.isEmpty ||evlilikController.text.isEmpty ||
-        toplamDeneyimController.text.isEmpty ||cvController.text.isEmpty ||
+        toplamDeneyimController.text.isEmpty ||
         alkolController.text.isEmpty ||evlilikController.text.isEmpty ||
         sonIsyeriCalismaController.text.isEmpty ||cocukSayisiController.text.isEmpty
-
+        //cvController.text.isEmpty
     ) {
       showDialog(
         context: context,

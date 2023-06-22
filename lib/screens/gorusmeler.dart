@@ -481,11 +481,9 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                                                                               yetkiliIdd = seciliYetkiliId;
                                                                               yetkiliID=selectedYetkiliName.toString();
 
-                                                                              selectedYetkiliName = '';
-                                                                              seciliYetkiliId = null;
-
                                                                               print("insert yetkili içiii   ${gorusmeId},${yetkiliIdd},   ${yetkiliID}  ");
-                                                                              bool isYetkiliAdded = GorusmeYetkiliList.any((yetkili) => yetkili?.yetkiliId == yetkiliIdd);
+                                                                              final isYetkiliAdded = GorusmeYetkiliList.any((yetkili) => yetkili?.yetkiliId == yetkiliIdd && yetkili?.gorusmeId == gorusmeId);
+
                                                                               if (isYetkiliAdded) {
                                                                                 showDialog(
                                                                                   context: context,
@@ -497,8 +495,9 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                                                                                         ElevatedButton(
                                                                                           onPressed: () {
                                                                                             //navigotor ile pushlayıp gönderelim alert yeniden başlasın
-                                                                                            setState(() {});
-                                                                                            Navigator.pop(context);
+                                                                                            setState(() {
+                                                                                              Navigator.pop(context);
+                                                                                            });
                                                                                           },
                                                                                           child: Text("Tamam"),
                                                                                           style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1)),
@@ -513,51 +512,30 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                                                                                       "gorusmeId": gorusmeId.toString(),
                                                                                       "yetkiliId": yetkiliIdd.toString(),
                                                                                     });
-                                                                                print("sbdv${response.body}");
+                                                                                print("sbdv ${response.body}");
                                                                                 if (response.statusCode == 201) {
                                                                                   setState((){
-                                                                                    gorusmeYetkiliList.add(GorusmeyeKatilim(yetkiliID: yetkiliID, gorusmeId: gorusmeId,));
-                                                                                  });
-                                                                                   showDialog(
-                                                                              context: context,
-                                                                              builder: (BuildContext context) {
-                                                                                return AlertDialog(
-                                                                                  title: Text("Başarılı"),
-                                                                                  content: Text("Yetkili Eklendi."),
-                                                                                  actions: [
-                                                                                    ElevatedButton(
-                                                                                      onPressed: () {
-                                                                                        setState(() {
-                                                                                          seciliYetkiliId = null;
-                                                                                          Navigator.pop(context);
-                                                                                        });
-                                                                                      },
-                                                                                      child: Text("Tamam"),
-                                                                                      style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1)),
-                                                                                    ),
-                                                                                  ],
-                                                                                );
-                                                                              },
-                                                                            );
-                                                                                  setState(() {
+                                                                                    GorusmeYetkiliList.add(GorusmeyeKatilim(yetkiliID: yetkiliID, gorusmeId: gorusmeId,));
                                                                                     seciliYetkiliId = null;
-                                                                                    showGorusmeYetkililer(gorusme);
+                                                                                    selectedYetkiliName = '';
+                                                                                    secilenYetkiliController.clear();
+                                                                                    yetkiliList?.removeWhere((yetkili) => yetkili?.id == yetkiliIdd);
                                                                                   });
-                                                                                }
-                                                                                else {
                                                                                   showDialog(
                                                                                     context: context,
                                                                                     builder: (BuildContext context) {
                                                                                       return AlertDialog(
-                                                                                        title: Text("Hata"),
-                                                                                        content: Text("Yetkili eklenirken bir sorun oluştu. Daha sonra tekrar deneyiniz"),
+                                                                                        title: Text("Başarılı"),
+                                                                                        content: Text("Yetkili Eklendi."),
                                                                                         actions: [
                                                                                           ElevatedButton(
                                                                                             onPressed: () {
-                                                                                              setState(() {});
-                                                                                              Navigator.pop(context);
+                                                                                              setState(() {
+                                                                                                Navigator.pop(context);
+                                                                                              });
                                                                                             },
                                                                                             child: Text("Tamam"),
+                                                                                            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF0E47A1)),
                                                                                           ),
                                                                                         ],
                                                                                       );
