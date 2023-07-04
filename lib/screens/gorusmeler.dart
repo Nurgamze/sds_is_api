@@ -314,7 +314,7 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
-                          width:145,
+                          width:153,
                           height: 40,
                           child: TextFormField(
                             controller: searchPozisyonController,
@@ -440,7 +440,7 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                                                                 Row(
                                                                   children: [
                                                                     Padding(
-                                                                      padding: const EdgeInsets.only(left: 20),
+                                                                      padding: const EdgeInsets.only(left: 15),
                                                                       child: Container(
                                                                         child: Column(
                                                                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +464,7 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    SizedBox(width: 25),
+                                                                    SizedBox(width:15 ),
                                                                     Container(
                                                                       height: 33,
                                                                       decoration: BoxDecoration(
@@ -557,12 +557,13 @@ class _GorusmelerPageState extends State<GorusmelerPage> {
                                                                 ),
                                                                 SizedBox(height: 25),
                                                                 Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                                   children: [
                                                                     DataTable(
                                                                       dividerThickness: 0,
-                                                                      columnSpacing: 10.0,
+                                                                      columnSpacing: 8.0,
                                                                       columns: const [
-                                                                        DataColumn(label: Text("Görüşmeye Katılan Yetkililer" ) ),
+                                                                        DataColumn(label: Text("Görüşmeye Katılan" + "\nYetkililer" ) ),
                                                                         DataColumn(label: Text("")),
                                                                       ],
                                                                       rows: GorusmeYetkiliList.map((yetkili) =>

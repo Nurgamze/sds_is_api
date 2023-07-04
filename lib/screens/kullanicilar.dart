@@ -51,68 +51,41 @@ class _KullanicilarPageState extends State<KullanicilarPage> {
     }
   }
 
-  Future<void> activity(User user, bool status) async {
-    if (!isAuthorized) return;
-    print('istek gitti');
-
-    final response = await http.post(Uri.parse('$url/users/${user.id}'),
-      body: {
-        'isActive': status ? "true" : "false",
-      },
-    );
-    if (response.statusCode == 200) {
-      print('200 döndü');
-      print(user.id);
-
-      setState(() {
-        user.isActive = status;
-        print('status: $status');
-      });
-
-      // update the user's isActive status in the local list
-      final int userIndex = usersModel.data!.indexWhere((u) => u.id == user.id);
-      if (userIndex != -1) {
-        setState(() {
-          usersModel.data![userIndex].isActive = status;
-        });
-      }
-      print("isactive değeri değiştirildi $userIndex. indexdeki kullanıcı , db id si ${user.id} olan  $status edildi");
-      String message= ('${user.adsoyad} kullanıcısı ${status ? 'aktif' : 'pasif'} hale getirildi.');
-
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(message),
-            actions: [
-              TextButton(
-                child: Text('Tamam'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-
-    } else {
-      print('hata oluştu'); // log an error message if failed
-    }
-  }
 
   Future<void> fetchAuthorization() async {
     final response = await http.get(Uri.parse('$url/yetkili'));
     if (response.statusCode == 200) {
       setState(() {
         yetkiliModel = YetkiliModel.fromJson(jsonDecode(response.body));
-        isAuthorized = yetkiliModel.yetkili!.any((y) => y.email == widget.email);
+        isAuthorized = yetkiliModel.yetkili!.any((yetkili) => yetkili.email == widget.email);
       });
     } else {
       throw Exception('Yetkilendirme hatası');
     }
   }
 
+  Future<void> updateUserStatus(User? user, bool isActive) async {
+    // Check if the user object and authorization information are available
+    if (user == null || !isAuthorized) {
+      return;
+    }
+
+    final userId = user.id; // Assuming there is an 'id' property in the User model
+    print("${userId}   useridli kişi ");
+    // Perform the API request to update the user's status
+    final response = await http.put(Uri.parse('$url/users/$userId'), body: {
+      'isActive': isActive.toString(),
+    });
+
+    if (response.statusCode == 200) {
+
+      setState(() {
+        user.isActive = isActive;
+      });
+    } else {
+      throw Exception('Failed to update user status');
+    }
+  }
 
 
   @override
@@ -144,13 +117,15 @@ class _KullanicilarPageState extends State<KullanicilarPage> {
         itemCount: usersModel.data?.length,
         itemBuilder: (context, index) {
           final user = usersModel.data?[index];
-          return SwitchListTile(
+          return ListTile(
             title: Text(user?.adsoyad ?? ''),
-            subtitle: Text(user?.email ?? ''),
-            value: user?.isActive ?? false,
-            onChanged: isAuthorized ? (bool value) => activity(user!, value) : null,
-            activeColor: Colors.green,
-            inactiveThumbColor: Colors.grey,
+            trailing: Switch(
+              value: user?.isActive ?? false,
+              onChanged: isAuthorized ? (bool value) => updateUserStatus(user, value) : null,
+              activeColor: Colors.green,
+              inactiveThumbColor: Colors.grey,
+
+            ),
           );
         },
       ),

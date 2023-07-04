@@ -97,7 +97,7 @@ class _YetkiliPageState extends State<YetkiliPage> {
                            filled: true,
                            fillColor: Colors.white,
                            prefixIcon: Icon(Icons.search),
-                           hintText: 'Ara...',
+                           hintText: 'Ara...',contentPadding: EdgeInsets.symmetric(vertical: 15),
                            border: OutlineInputBorder(
                              borderRadius: BorderRadius.circular(10),
                            ),

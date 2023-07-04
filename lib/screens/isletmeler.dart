@@ -106,7 +106,7 @@ class _IsletmelerPageState extends State<IsletmelerPage> {
                                                                 final response =await http.post(Uri.parse("$url/isletmeedit/$id"),
                                                                         body: {
                                                                             'unvan':unvanController.text,
-                                                                      //'password':passwordController.text,
+                                                                             //'password':passwordController.text,
                                                                     });
                                                                 if (response .statusCode ==201) {
                                                                   Navigator.push(context,
@@ -164,47 +164,76 @@ class _IsletmelerPageState extends State<IsletmelerPage> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('İşletme Ekle',),
-                      content: Column(
-                        mainAxisSize:MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            controller: unvanCont,
-                            decoration: InputDecoration(
-                                labelText: "Unvan",
-                                border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15)
-                            )),
-                          ),
-                        ],
+                      title: Text('İşletme Ekle',style: TextStyle(fontSize: 18),),
+                      content: Container(
+                        width: MediaQuery.of(context).size.width * 0.1,
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        child: Column(
+                          //mainAxisSize:MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              controller: unvanCont,
+                              decoration: InputDecoration(
+                                  labelText: "Unvan",contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                                  border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(13)
+                              )),
+                            ),
+                          ],
+                        ),
                       ),
                       actions: [
-                        ElevatedButton(
-                          onPressed: () {
-                            void insertIsletme() async {
-                              final response =await http.post(Uri.parse("$url/insertisletme"),
-                                  body: {
-                                    'unvan':unvanCont.text,
-                                    //'password':passwordController.text,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                if(unvanCont.text.isNotEmpty){
+                                  void insertIsletme() async {
+                                    final response =await http.post(Uri.parse("$url/insertisletme"),
+                                        body: {
+                                          'unvan':unvanCont.text,
+                                          //'password':passwordController.text,
+                                        });
+                                    if (response .statusCode ==201) {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) => IsletmelerPage(email: widget.email,password: widget.password,adsoyad: widget.adsoyad,id: widget.id,)));
+                                    }
+                                  }
+                                  setState(() {
+                                    insertIsletme();
                                   });
-                              if (response .statusCode ==201) {
-                                print('asjdgaj: ${unvanCont.text}');
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) => IsletmelerPage(email: widget.email,password: widget.password,adsoyad: widget.adsoyad,id: widget.id,)));
-                              }
-                            }
-                            setState(() {
-                              insertIsletme();
-                            });
-                          },
-                          child:Text("Tamam"),
-                          style: ButtonStyle(backgroundColor:MaterialStateProperty.all(Colors.grey[400])),
-                        ),
-                        ElevatedButton(onPressed: () { Navigator.push( context,MaterialPageRoute(builder: (context) => IsletmelerPage( email: widget.email,password:widget.password,adsoyad:widget.adsoyad,id: widget.id,)));
-                        },
-                          child: Text("İptal"),style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all( Colors.grey[400])),
+                                }else{
+                                  showDialog(context: context, builder: (BuildContext context){
+                                    return Container(
+                                      width: 10,
+                                      child: AlertDialog(
+                                        title: Text("Hata"),
+                                        content: Text("Unvan Giriniz"),
+                                        actions: [
+                                          ElevatedButton(onPressed: (){
+                                            Navigator.pop(context);
+                                          }, child: Text("Tamam"))
+                                        ],
+                                      ),
+                                    );
+                                  });
+                                }
+                              },
+                              child:Text("Tamam"),
+                              style: ButtonStyle(backgroundColor:MaterialStateProperty.all(Colors.grey[400])),
+                            ),
+                            SizedBox(width: 8,),
+                            ElevatedButton(onPressed: () {
+                              Navigator.pop(context);
+                             // Navigator.push( context,MaterialPageRoute(builder: (context) => IsletmelerPage( email: widget.email,password:widget.password,adsoyad:widget.adsoyad,id: widget.id,)));
+                            },
+                              child: Text("İptal"),style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all( Colors.grey[400])),
+                            )
+                          ],
                         )
+
                       ],
                     );
                   });

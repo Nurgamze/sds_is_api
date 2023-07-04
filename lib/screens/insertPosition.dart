@@ -209,7 +209,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
               TextFormField(
                 controller: minYasCont,
                 decoration: InputDecoration(
-                    labelText: "Min Yas ",
+                    labelText: "Min Yaş ",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     )
@@ -221,7 +221,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
               TextFormField(
                 controller: maxYasCont,
                 decoration: InputDecoration(
-                    labelText: "Max Yas",
+                    labelText: "Max Yaş",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     )
