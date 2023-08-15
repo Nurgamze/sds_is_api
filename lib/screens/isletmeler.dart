@@ -96,7 +96,7 @@ class _IsletmelerPageState extends State<IsletmelerPage> {
                                                                   border: OutlineInputBorder(
                                                                       borderRadius:
                                                                           BorderRadius.circular( 5))),),
-                                                            SizedBox( height: 10,),
+                                                             SizedBox( height: 10,),
                                                           ],
                                                         ),
                                                         actions: [
@@ -105,8 +105,8 @@ class _IsletmelerPageState extends State<IsletmelerPage> {
                                                               void editYetkili() async {
                                                                 final response =await http.post(Uri.parse("$url/isletmeedit/$id"),
                                                                         body: {
-                                                                            'unvan':unvanController.text,
-                                                                             //'password':passwordController.text,
+                                                                          'unvan':unvanController.text,
+                                                                           //'password':passwordController.text,
                                                                     });
                                                                 if (response .statusCode ==201) {
                                                                   Navigator.push(context,

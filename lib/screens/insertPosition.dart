@@ -81,6 +81,8 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
         });
         print("işletme listesiiii $isletmeList");
       }
+
+
       void insertPosition() async{
         if ( unvanCont.text.isEmpty || deneyimYiliCont.text.isEmpty ||
             minYasCont.text.isEmpty || maxYasCont.text.isEmpty ||
@@ -170,7 +172,7 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
         }
     }
 
-        @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -499,8 +501,6 @@ class _PozisyonEkleState extends State<PozisyonEkle> {
                       )
                     ],
                   ),
-
-
                   SizedBox(height: 15,),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.8,
